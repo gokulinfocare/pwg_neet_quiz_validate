@@ -4,6 +4,7 @@ import streamlit as st
 import xml.etree.ElementTree as ET
 import sys
 import pandas as pd
+import base64
 import os
 from function_moodle_xml_create import create_moodle_xml
 
