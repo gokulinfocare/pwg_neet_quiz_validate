@@ -12,6 +12,7 @@ def get_data_from_xml():
 
     xml_table = []              # List to store the data from XML file
     new_filename = "updated.xml"   # Default name for updated XML file
+    st.set_page_config(page_title="Please upload XML file to display/edit the data", layout="wide")
     file_name = st.file_uploader("Choose the XML file you want to display/edit")
     if file_name is not None:
         file_contents = file_name.read().decode("utf-8")
@@ -99,7 +100,10 @@ def edit_data(data):
     data = pd.DataFrame(data)           #Convert the list of original data to a dataframe
     for i in range(len(data)):
         for col in data.columns:
-            edited_data.at[i, col] = st.text_input(f"Row {i+1} - {col}", data.at[i, col])   #Edits the data in the dataframe
+            if len(data.at[i, col]) > 140:     #If the length of the data is more than 140 chars
+                edited_data.at[i, col] = st.text_area(f"Row {i+1} - {col}", data.at[i, col],  height=175)
+            else:
+                edited_data.at[i, col] = st.text_input(f"Row {i+1} - {col}", data.at[i, col])   #Edits the data in the dataframe
     return edited_data
 
 
@@ -108,13 +112,16 @@ def create_xml(data,new_filename):
     tree = create_moodle_xml(data)
     #Write the ElementTree object to an XML file mentioning path name
     #file_path = f"C:/Users/Taanya/Desktop/AssignGokul/Streamlit/{new_filename}"
-    file_path = f"C:/Moodle Files/Languages/{new_filename}"
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(tree)
-    st.write("### Updated XML file has been created successfully!")
+    # file_path = f"C:/Moodle Files/Languages/{new_filename}"
+    # with open(file_path, 'w', encoding='utf-8') as file:
+    #     file.write(tree)
+    #xml_string = ET.tostring(tree, encoding="utf-8")    
+    st.download_button(label="Save Changes and Download XML File ", data=tree, file_name=new_filename)
+
+    #st.write("### Updated XML file has been created successfully!")
 
 # Main
-st.title("Please upload XML file to display/edit the data")
+#st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
 display_data(xml_table)                             #Display the original data
 updated_data = edit_data(xml_table)                 #Edit the data
@@ -124,5 +131,5 @@ if updated_data is not None:
 xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
 
 # Call the function with the updated data
-if st.button('Save Changes'):                       # Button to save changes one time only, so that multiple changes are saved.
-    create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
+#if st.button('Save Changes and Download File'):                       # Button to save changes one time only, so that multiple changes are saved.
+create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
