@@ -1,16 +1,16 @@
 # This program creates Moodle XML File
 import xml.etree.ElementTree as ET
-import pyodbc
+#import pyodbc
 import sys
 import re
 
-def start_connection():
-    conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
-                "Server=LAPTOP-EITSFNFO;"
-                "Database=RamaKrishna;"
-                "Trusted_Connection=yes;")
-    cursor = conn.cursor()
-    return conn, cursor
+#def start_connection():
+#    conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
+#                "Server=LAPTOP-EITSFNFO;"
+#                "Database=RamaKrishna;"
+#                "Trusted_Connection=yes;")
+#    cursor = conn.cursor()
+#    return conn, cursor
 
 def convert_math_delimiters(latex_string):
     new_string = ""
