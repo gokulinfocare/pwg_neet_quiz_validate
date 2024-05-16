@@ -143,6 +143,8 @@ def compare_original_and_updated_data(xml_table, updated_data):
             if rec['moodle_id'] == user_rec['moodle_id']:
                 #if rec['questiontext'] != user_rec['questiontext'] or rec['option1'] != user_rec['option1'] or rec['option2'] != user_rec['option2'] or rec['option3'] != user_rec['option3'] or rec['option4'] != user_rec['option4'] or rec['soln'] != user_rec['soln'] or rec['incorrect_feedback'] != user_rec['incorrect_feedback']:
                 if rec['questiontext'] != user_rec['questiontext']:
+                    st.write("Original:" + rec['questiontext'])
+                    st.write("Modified:" + user_rec['questiontext'])
                     output.append(user_rec)
 
     return output
