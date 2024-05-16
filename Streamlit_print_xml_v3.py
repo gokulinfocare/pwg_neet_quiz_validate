@@ -123,7 +123,7 @@ def create_xml(data,new_filename):
 # Main
 #st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
-if len(xml_table) > 0 "":
+if len(xml_table) > 0 :
     display_data(xml_table)                             #Display the original data
     updated_data = edit_data(xml_table)                 #Edit the data
     if updated_data is not None:
