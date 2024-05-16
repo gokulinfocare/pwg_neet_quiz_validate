@@ -116,7 +116,7 @@ def create_xml(data,new_filename):
     xml_tree = create_moodle_xml(data)
     b64_encoded_xml = base64.b64encode(xml_tree.encode()).decode()
     tree = f'<a href="data:application/xml;base64,{b64_encoded_xml}">Download XML</a>'
-    download_link, = st.download_button("Save Changes and Download XML File", tree, file_name=new_filename, mime="application/xml")
+    download_link = st.download_button("Save Changes and Download XML File", tree, file_name=new_filename, mime="application/xml")
     #Write the ElementTree object to an XML file mentioning path name
     #file_path = f"C:/Users/Taanya/Desktop/AssignGokul/Streamlit/{new_filename}"
     # file_path = f"C:/Moodle Files/Languages/{new_filename}"
