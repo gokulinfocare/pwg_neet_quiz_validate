@@ -123,7 +123,7 @@ def create_xml(data,new_filename):
     #st.write("### Updated XML file has been created successfully!")
 
 # Main
-st.header = "Program to Update Quiz Data"
+st.header("Program to Update Quiz Data")
 st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
 if len(xml_table) > 0 :
