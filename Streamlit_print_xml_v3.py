@@ -134,6 +134,17 @@ def create_xml(data,new_filename):
 
     #st.write("### Updated XML file has been created successfully!")
 
+
+def compare_original_and_updated_data(xml_table, updated_data):
+    user_data = updated_data.to_dict('records')
+    output = []
+    for rec in xml_table:
+        for user_rec in user_data:
+            if rec['moodle_id'] == user_rec['moodle_id']:
+                if rec['questiontext'] != user_rec['questiontext'] or rec['option1'] != user_rec['option1'] or rec['option2'] != user_rec['option2'] or rec['option3'] != user_rec['option3'] or rec['option4'] != user_rec['option4'] or rec['soln'] != user_rec['soln'] or rec['incorrect_feedback'] != user_rec['incorrect_feedback']:
+                    output.append(user_rec)
+
+    return output
 # Main
 #st.header("Program to Update Quiz Data")
 #st.title("Please upload XML file to display/edit the data")
@@ -141,11 +152,9 @@ xml_table, new_filename = get_data_from_xml()       #Get the data from the XML f
 if len(xml_table) > 0 :
     display_data(xml_table)                             #Display the original data
     updated_data = edit_data(xml_table)                 #Edit the data
+    final_updated_data = compare_original_and_updated_data(xml_table, updated_data)
     if updated_data is not None:
             st.write("### Updated Data:")
             st.dataframe(updated_data)
-    xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
-    
-    # Call the function with the updated data
-    #if st.button('Save Changes and Download File'):                       # Button to save changes one time only, so that multiple changes are saved.
-    create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
+        xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
+        create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
