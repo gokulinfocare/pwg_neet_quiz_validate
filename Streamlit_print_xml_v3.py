@@ -14,7 +14,7 @@ def get_data_from_xml():
     new_filename = "updated.xml"   # Default name for updated XML file
     
     st.set_page_config(page_title="Please upload XML file to display/edit the data", layout="wide")
-    st.header = "Program to Update Quiz Data"
+    
     file_name = st.file_uploader("Choose the XML file you want to display/edit")
     if file_name is not None:
         file_contents = file_name.read().decode("utf-8")
@@ -123,7 +123,8 @@ def create_xml(data,new_filename):
     #st.write("### Updated XML file has been created successfully!")
 
 # Main
-#st.title("Please upload XML file to display/edit the data")
+st.header = "Program to Update Quiz Data"
+st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
 if len(xml_table) > 0 :
     display_data(xml_table)                             #Display the original data
