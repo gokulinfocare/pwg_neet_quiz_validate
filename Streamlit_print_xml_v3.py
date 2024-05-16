@@ -12,6 +12,7 @@ def get_data_from_xml():
 
     xml_table = []              # List to store the data from XML file
     new_filename = "updated.xml"   # Default name for updated XML file
+    st.title = "Program to Update Quiz Data"
     st.set_page_config(page_title="Please upload XML file to display/edit the data", layout="wide")
     file_name = st.file_uploader("Choose the XML file you want to display/edit")
     if file_name is not None:
