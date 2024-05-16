@@ -154,7 +154,7 @@ if len(xml_table) > 0 :
     updated_data = edit_data(xml_table)                 #Edit the data
     final_updated_data = compare_original_and_updated_data(xml_table, updated_data)
     if updated_data is not None:
-            st.write("### Updated Data:")
-            st.dataframe(updated_data)
+        st.write("### Updated Data:")
+        st.dataframe(updated_data)
         xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
         create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
