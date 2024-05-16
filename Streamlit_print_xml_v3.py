@@ -17,7 +17,7 @@ def get_data_from_xml():
     
     file_name = st.file_uploader("Choose the XML file you want to display/edit")
     if file_name is not None:
-        new_filename = file_name[:-4] + "updated.xml"
+        new_filename = file_name.name[:-4] + "updated.xml"
         file_contents = file_name.read().decode("utf-8")
         root = ET.fromstring(file_contents)
         xml_table = []
