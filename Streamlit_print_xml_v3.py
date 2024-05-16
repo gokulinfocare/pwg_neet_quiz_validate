@@ -11,7 +11,7 @@ from function_moodle_xml_create import create_moodle_xml
 def get_data_from_xml():
 
     xml_table = []              # List to store the data from XML file
-    #new_filename = "updated.xml"   # Default name for updated XML file
+    new_filename = "updated.xml"   # Default name for updated XML file
     
     st.set_page_config(page_title="Please upload XML file to display/edit the data", layout="wide")
     
