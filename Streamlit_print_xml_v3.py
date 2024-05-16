@@ -123,13 +123,14 @@ def create_xml(data,new_filename):
 # Main
 #st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
-display_data(xml_table)                             #Display the original data
-updated_data = edit_data(xml_table)                 #Edit the data
-if updated_data is not None:
-        st.write("### Updated Data:")
-        st.dataframe(updated_data)
-xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
-
-# Call the function with the updated data
-#if st.button('Save Changes and Download File'):                       # Button to save changes one time only, so that multiple changes are saved.
-create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
+if new_filename != "":
+    display_data(xml_table)                             #Display the original data
+    updated_data = edit_data(xml_table)                 #Edit the data
+    if updated_data is not None:
+            st.write("### Updated Data:")
+            st.dataframe(updated_data)
+    xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
+    
+    # Call the function with the updated data
+    #if st.button('Save Changes and Download File'):                       # Button to save changes one time only, so that multiple changes are saved.
+    create_xml(xml_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
