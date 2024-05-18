@@ -57,13 +57,13 @@ def get_data_from_xml():
                     w_count += 1
                 struc = {
                     'moodle_id': moodle_id,
-                    'questiontext': qtext,
-                    'soln': soln,
+                    'questiontext': qtext,                    
                     'option1': option1,
                     'option2': option2,
                     'option3': option3,
                     'option4': option4,
                     'answer': answer,
+                    'soln': soln,
                     'incorrect_feedback': w_incorrect_feedback
                 }
                 xml_table.append(struc)
@@ -150,7 +150,7 @@ def compare_original_and_updated_data(xml_table, updated_data):
 #st.title("Please upload XML file to display/edit the data")
 xml_table, new_filename = get_data_from_xml()       #Get the data from the XML file
 if len(xml_table) > 0 :
-    display_data(xml_table)                             #Display the original data
+    #display_data(xml_table)                             #Display the original data
     updated_data = edit_data(xml_table)                 #Edit the data
     final_updated_data = compare_original_and_updated_data(xml_table, updated_data)
     if final_updated_data is not None:
