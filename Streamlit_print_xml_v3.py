@@ -104,6 +104,8 @@ def edit_data(data):
     data = pd.DataFrame(data)           #Convert the list of original data to a dataframe
     for i in range(len(data)):
         for col in data.columns:
+            if "\(" in data.at[i, col]:
+                st.latex(data.at[i, col])
             if len(data.at[i, col]) > 180:     #If the length of the data is more than 180 chars
                 edited_data.at[i, col] = st.text_area(f"Row {i+1} - {col}", data.at[i, col],  height=125)
             else:
