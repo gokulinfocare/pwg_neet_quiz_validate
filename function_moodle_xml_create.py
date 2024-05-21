@@ -1,16 +1,16 @@
 # This program creates Moodle XML File
 import xml.etree.ElementTree as ET
-#import pyodbc
+import pyodbc
 import sys
 import re
 
-# def start_connection():
-#     conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
-#                 "Server=LAPTOP-EITSFNFO;"
-#                 "Database=RamaKrishna;"
-#                 "Trusted_Connection=yes;")
-#     cursor = conn.cursor()
-#     return conn, cursor
+def start_connection():
+    conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
+                "Server=LAPTOP-EITSFNFO;"
+                "Database=RamaKrishna;"
+                "Trusted_Connection=yes;")
+    cursor = conn.cursor()
+    return conn, cursor
 
 def convert_math_delimiters(latex_string):
     new_string = ""
@@ -130,6 +130,14 @@ def prepare_correctfeedback_text_lang(w_correct_answer,w_correctfeedback, w_lang
     return w_new_text
 
 def prepare_correctfeedback_text_en(w_correct_answer,w_correctfeedback):
+
+    if "Your answer is incorrect" in w_correctfeedback:
+        input_table = w_correctfeedback.split("<br>")
+        if "Your answer is incorrect" in input_table[0]:
+            input_table = input_table[1:]
+        if "Correct answer is:" in input_table[0]:
+            input_table = input_table[1:]
+        w_correctfeedback = "<br>".join(input_table)
 
     w_new_text = "Your answer is incorrect" + "<br>Correct answer is: <strong>" + w_correct_answer + "</strong><br>" 
     w_new_text = w_new_text  + w_correctfeedback
@@ -278,7 +286,7 @@ def remove_unnecessary_text(input_text, w_lang_xml):
                 start_position = upper_text.find("ON HOW THE ANSWER")
                 end_position = start_position + 28
                 if upper_text[end_position] == ":":
-                    end_position += 2
+                    end_position += 1
                 output_text = output_text[:start_position] + output_text[end_position:]
             upper_text = output_text.upper()
             if "ANSWER IS CORRECT:" in upper_text:
@@ -328,6 +336,12 @@ def remove_unnecessary_text(input_text, w_lang_xml):
                 output_text = output_text[1:]
             if output_text[:4] == "<br>":
                 output_text = output_text[4:]
+                if output_text[:4] == "<br>":
+                    output_text = output_text[4:]
+                if output_text[:2] == "  ":
+                    output_text = output_text[2:]
+                if output_text[0] == " ":  # Check again
+                    output_text = output_text[1:]
             if output_text[:4] == "2. :":
                 output_text = output_text[4:]
             if output_text[0] == " ":
@@ -398,28 +412,18 @@ def create_moodle_xml(questions):
     for question in questions:
         # Naming conversion from different format to Moodle format
         w_questiontext = w_option1 = w_option2 = w_option3 = w_option4 = w_answer = w_correctfeedback = w_incorrectfeedback = ""
-        
+        moodle_id = moodle_qno = w_correct_answer = w_correct_answer_mod_lang = ""
+        w_option1_lang = w_option2_lang = w_option3_lang = w_option4_lang = w_lang_xml = ""
+        w_correct_answer_lang = w_incorrect_answer_msg = ""
         if "moodle_id" in question:
             moodle_id = question["moodle_id"]
         if 'questiontext' in question:
             w_questiontext = question['questiontext']
             if w_questiontext[-7:] == 'ptions:':  # Remove the last 8 characters
                 w_questiontext = w_questiontext[:-8]
-            # if '<br>' in w_questiontext:
-            #     count = w_questiontext.count('<br>')
-            #     if count == 3:
-            #         w_questiontext = w_questiontext.replace('<br>', '<br><br>')
-            #         w_questiontext  = w_questiontext.replace('<br><br><br><br>', '<br><br>', )
-            #     elif count == 2:
-            #         # replace the first <br> with <brr>
-            #         # replace the second <br> with <br><br>
-            #         # replace the first <brr> with <br>
-            #         w_questiontext = w_questiontext.replace('<br>', '<brr>', 1)
-            #         w_questiontext = w_questiontext.replace('<br>', '<br><br>', 1)
-            #         w_questiontext = w_questiontext.replace('<brr>', '<br>', 1)
-
-
-            if "Question ID: " not in w_questiontext:             #"Insert Moodle Question #
+            if 'moodle_qno' in question:
+                moodle_qno = moodle_id[2:3] + str(question['moodle_qno'])
+            if moodle_qno == "" and "Question ID: " not in w_questiontext:             #"Insert Moodle Question #
                 moodle_qno = get_moodle_qn(moodle_id)
                 w_questiontext = "Question ID: " + moodle_qno + '<br>' + w_questiontext            
         if 'option1' in question:
@@ -453,9 +457,7 @@ def create_moodle_xml(questions):
             w_correctfeedback = question['soln']
 
         
-        # In language transalates remove duplicates if options contains only numbers
-        w_option1_lang = w_option2_lang = w_option3_lang = w_option4_lang = ""
-        w_lang_xml = ""
+        # In language transalates remove duplicates if options contains only numbers        
         if 'incorrect_feedback' in question:    # This field only available in language transalation
             w_lang_xml = "X"
             #w_questiontext = adjust_question_text(w_questiontext, w_lang_xml)
@@ -468,12 +470,6 @@ def create_moodle_xml(questions):
             w_option3 = check_replace_duplicate(w_option3)
             w_option4 = check_replace_duplicate(w_option4)
             w_option1, w_option2, w_option3, w_option4 = check_adjust_options(w_option1, w_option2, w_option3, w_option4)
-            # w_questiontext = remove_spaces(w_questiontext)
-            # w_option1 = remove_spaces(w_option1)   
-            # w_option2 = remove_spaces(w_option2)
-            # w_option3 = remove_spaces(w_option3)
-            # w_option4 = remove_spaces(w_option4)
-            # w_correctfeedback = remove_spaces(w_correctfeedback)
             
 
         # Fix many issues in formatting        
@@ -498,9 +494,7 @@ def create_moodle_xml(questions):
         w_option4 = convert_math_delimiters(w_option4)
         w_option4 = convert_new_line(w_option4)        
         w_correctfeedback = convert_math_delimiters(w_correctfeedback)
-        w_correctfeedback = convert_new_line(w_correctfeedback)
-        w_correct_answer = ""
-        w_correct_answer_mod_lang = ""
+        w_correctfeedback = convert_new_line(w_correctfeedback)        
         if w_answer.upper() == 'A':            
             w_correct_answer = w_option1
             if w_option1 != w_option1_lang:
