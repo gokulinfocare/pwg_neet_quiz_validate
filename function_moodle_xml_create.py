@@ -1,6 +1,6 @@
 # This program creates Moodle XML File
 import xml.etree.ElementTree as ET
-import pyodbc
+#import pyodbc
 import sys
 import re
 import streamlit as st
