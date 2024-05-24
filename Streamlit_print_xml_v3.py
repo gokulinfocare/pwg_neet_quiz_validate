@@ -158,9 +158,9 @@ def edit_data(data):
     return edited_data
 
 
-def create_xml(data,new_filename):
+def create_xml(input_table,new_filename):
     if st.button("Please check and confirm the above changes"):
-        input_table = data.to_dict('records')
+        #input_table = data.to_dict('records')
         output_table = []
         for data in input_table:        
             data['questiontext'] = data['questiontext'].replace('\n', '<br>')
@@ -240,6 +240,8 @@ def compare_original_and_updated_data(xml_table, updated_data):
         rec['option4'] = rec['option4'].strip()
         rec['answer'] = rec['answer'].strip()
         rec['soln'] = rec['soln'].strip()
+        # if rec['soln'][-1] != '.':
+        #         rec['soln'] = user_rec['soln'] + '.'
         rec['incorrect_feedback'] = rec['incorrect_feedback'].strip()
         if 'question_id' in rec:
             w_question_id = rec['question_id']
@@ -311,19 +313,19 @@ def compare_original_and_updated_data(xml_table, updated_data):
                 if w_changed == "X":
                     w_count += 1
                     st.divider()
-                
+            output.append(user_rec)        
                 
     if w_count == 0:
         st.write("No changes found in the data")
     else:
         st.subheader(f"Total {w_count} records have been changed")
-        output.append('X')           
+        #output.append('X')           
                 
                 
                 # if rec['questiontext'] != user_rec['questiontext'] or rec['option1'] != user_rec['option1'] or rec['option2'] != user_rec['option2'] or rec['option3'] != user_rec['option3'] or rec['option4'] != user_rec['option4'] or rec['soln'] != user_rec['soln'] or rec['incorrect_feedback'] != user_rec['incorrect_feedback']:
                 #    output.append(user_rec)
 
-    return w_count
+    return output, w_count
 # Main
 #st.header("Program to Update Quiz Data")
 #st.title("Please upload XML file to display/edit the data")
@@ -331,9 +333,9 @@ xml_table, new_filename = get_data_from_xml()       #Get the data from the XML f
 if len(xml_table) > 0 :
     #display_data(xml_table)                             #Display the original data
     updated_data = edit_data(xml_table)                 #Edit the data
-    final_updated_data = compare_original_and_updated_data(xml_table, updated_data)
-    if final_updated_data != 0:
+    final_updated_data, w_count = compare_original_and_updated_data(xml_table, updated_data)
+    if w_count != 0:
         # st.write("### Updated Data:")
         # st.dataframe(final_updated_data)
         #xml_data = updated_data.to_dict('records')          #Converting the updated data dataframe to dictionary format
-        create_xml(updated_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
+        create_xml(final_updated_data,new_filename)               #Once submitted, the updated XML file is created and saved in the folder path mentioned
