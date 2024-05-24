@@ -313,7 +313,18 @@ def compare_original_and_updated_data(xml_table, updated_data):
                 if w_changed == "X":
                     w_count += 1
                     st.divider()
-            output.append(user_rec)        
+        struc = {
+            'moodle_id': user_rec['moodle_id'],
+            'questiontext': user_rec['questiontext'],
+            'option1': user_rec['option1'],
+            'option2': user_rec['option2'],
+            'option3': user_rec['option3'],
+            'option4': user_rec['option4'],
+            'answer': user_rec['answer'],
+            'soln': user_rec['soln'],
+            'incorrect_feedback': user_rec['incorrect_feedback']                
+        }
+        output.append(struc)        
                 
     if w_count == 0:
         st.write("No changes found in the data")
