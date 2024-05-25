@@ -128,6 +128,10 @@ def edit_data(data):
                 edited_data.at[w_count, key] = rec[key]                
                 continue
             if "\\(" in rec[key] or "\\[" in rec[key]:
+                if "\\)\\(" in rec[key]:
+                    rec[key] = rec[key].replace("\\)\\(", "\\) \\(")
+                if "\\]\\[" in rec[key]:
+                    rec[key] = rec[key].replace("\\]\\[", "\\] \\[")
                 w_latex = rec[key]
                 w_latex = w_latex.replace('\\(', "$").replace('\\)', "$").replace('\\[', "$$").replace('\\]', "$$")
                 st.markdown(w_latex)
