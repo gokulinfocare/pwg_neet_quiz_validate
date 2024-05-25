@@ -127,13 +127,14 @@ def edit_data(data):
             if w_en_lang == "X" and key == 'incorrect_feedback':
                 edited_data.at[w_count, key] = rec[key]                
                 continue
-            if "\(" in rec[key]:
+            if "\\(" in rec[key] or "\\[" in rec[key]:
                 w_latex = rec[key]
-                w_latex = w_latex.replace('\(', "")
-                w_latex = w_latex.replace('\)', "")                          
-                st.latex(w_latex)
-            if len(rec[key]) > 180:
+                w_latex = w_latex.replace('\\(', "$").replace('\\)', "$").replace('\\[', "$$").replace('\\]', "$$")
+                st.markdown(w_latex)
+            if len(rec[key]) > 180 :
                 edited_data.at[w_count, key] = st.text_area(f"Row {w_count} - {key}", rec[key],  height=125)
+            elif '\n' in rec[key]:
+                edited_data.at[w_count, key] = st.text_area(f"Row {w_count} - {key}", rec[key],  height=30)
             else:
                 edited_data.at[w_count, key] = st.text_input(f"Row {w_count} - {key}", rec[key])
         w_count += 1
@@ -231,23 +232,26 @@ def compare_original_and_updated_data(xml_table, updated_data):
     w_changed = ""
     output = []
     for rec in xml_table:
-        w_changed = ""
-        # Replace space begin and end of the string
-        rec['questiontext'] = rec['questiontext'].strip()
-        rec['option1'] = rec['option1'].strip()
-        rec['option2'] = rec['option2'].strip()
-        rec['option3'] = rec['option3'].strip()
-        rec['option4'] = rec['option4'].strip()
-        rec['answer'] = rec['answer'].strip()
-        rec['soln'] = rec['soln'].strip()
-        # if rec['soln'][-1] != '.':
-        #         rec['soln'] = user_rec['soln'] + '.'
-        rec['incorrect_feedback'] = rec['incorrect_feedback'].strip()
-        if 'question_id' in rec:
-            w_question_id = rec['question_id']
-        else:  
-            w_question_id = rec['moodle_id']
         for user_rec in user_data:
+            if rec['moodle_id'] != user_rec['moodle_id']:
+                continue
+            w_changed = ""
+            # Replace space begin and end of the string
+            rec['questiontext'] = rec['questiontext'].strip()
+            rec['option1'] = rec['option1'].strip()
+            rec['option2'] = rec['option2'].strip()
+            rec['option3'] = rec['option3'].strip()
+            rec['option4'] = rec['option4'].strip()
+            rec['answer'] = rec['answer'].strip()
+            rec['soln'] = rec['soln'].strip()
+            # if rec['soln'][-1] != '.':
+            #         rec['soln'] = user_rec['soln'] + '.'
+            rec['incorrect_feedback'] = rec['incorrect_feedback'].strip()
+            if 'question_id' in rec:
+                w_question_id = rec['question_id']
+            else:  
+                w_question_id = rec['moodle_id']
+        #for user_rec in user_data:
             # Replace space begin and end of the string
             user_rec['questiontext'] = user_rec['questiontext'].strip()
             user_rec['option1'] = user_rec['option1'].strip()
@@ -313,18 +317,18 @@ def compare_original_and_updated_data(xml_table, updated_data):
                 if w_changed == "X":
                     w_count += 1
                     st.divider()
-        struc = {
-            'moodle_id': user_rec['moodle_id'],
-            'questiontext': user_rec['questiontext'],
-            'option1': user_rec['option1'],
-            'option2': user_rec['option2'],
-            'option3': user_rec['option3'],
-            'option4': user_rec['option4'],
-            'answer': user_rec['answer'],
-            'soln': user_rec['soln'],
-            'incorrect_feedback': user_rec['incorrect_feedback']                
-        }
-        output.append(struc)        
+            struc = {
+                'moodle_id': user_rec['moodle_id'],
+                'questiontext': user_rec['questiontext'],
+                'option1': user_rec['option1'],
+                'option2': user_rec['option2'],
+                'option3': user_rec['option3'],
+                'option4': user_rec['option4'],
+                'answer': user_rec['answer'],
+                'soln': user_rec['soln'],
+                'incorrect_feedback': user_rec['incorrect_feedback']                
+            }
+            output.append(struc)        
                 
     if w_count == 0:
         st.write("No changes found in the data")
